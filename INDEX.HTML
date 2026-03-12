@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scripts Prontos NOC - Guilherme</title>
+  <style>
+    :root {
+      --bg: #0a1020;
+      --panel: #111935;
+      --panel-2: #172347;
+      --line: rgba(255,255,255,0.08);
+      --text: #eef3ff;
+      --muted: #9eb0d9;
+      --blue: #58a6ff;
+      --cyan: #39d0ff;
+      --green: #19c37d;
+      --yellow: #ffb020;
+      --red: #ff5d73;
+      --shadow: 0 18px 42px rgba(0,0,0,0.32);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #08101e 0%, #0b1020 100%);
+      color: var(--text);
+    }
+
+    .app {
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .shell {
+      max-width: 1450px;
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 1.3fr 0.9fr;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .hero,
+    .quick-panel {
+      background: linear-gradient(180deg, rgba(21, 30, 58, 0.96), rgba(14, 22, 43, 0.98));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      font-weight: bold;
+      box-shadow: var(--shadow);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .brand p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .status-pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(25,195,125,0.12);
+      border: 1px solid rgba(25,195,125,0.35);
+      color: #8ceabd;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .mini-card {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .mini-card h3 {
+      margin: 0 0 8px;
+      font-size: 14px;
+    }
+
+    .mini-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .quick-panel h2,
+    .library h2 {
+      margin: 0 0 14px;
+      font-size: 18px;
+    }
+
+    .quick-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .quick-btn,
+    .filter-btn,
+    .copy-btn,
+    .favorite-btn,
+    .action-btn {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: 0.2s ease;
+      font-size: 13px;
+    }
+
+    .quick-btn:hover,
+    .filter-btn:hover,
+    .copy-btn:hover,
+    .favorite-btn:hover,
+    .action-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(88,166,255,0.42);
+      background: rgba(88,166,255,0.12);
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .sidebar,
+    .library {
+      background: linear-gradient(180deg, rgba(21, 30, 58, 0.96), rgba(14, 22, 43, 0.98));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .sidebar-section + .sidebar-section {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    .sidebar h3 {
+      margin: 0 0 12px;
+      font-size: 15px;
+    }
+
+    .sidebar p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      margin: 0 0 10px;
+    }
+
+    .search {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #0e1631;
+      color: var(--text);
+      padding: 13px 14px;
+      border-radius: 16px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter-btn.active {
+      background: linear-gradient(135deg, #1c2b58, #162243);
+      border-color: rgba(88,166,255,0.42);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .stat strong {
+      font-size: 22px;
+    }
+
+    .library-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .library-sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      border-radius: 20px;
+      padding: 18px;
+      position: relative;
+      transition: 0.22s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(88,166,255,0.28);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .category {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-weight: bold;
+    }
+
+    .category.abertura { background: rgba(88,166,255,0.14); color: #9cccff; }
+    .category.lentidao { background: rgba(255,176,32,0.14); color: #ffd67c; }
+    .category.fibra { background: rgba(255,93,115,0.14); color: #ffb0bc; }
+    .category.encerramento { background: rgba(25,195,125,0.14); color: #95efc2; }
+    .category.geral { background: rgba(57,208,255,0.14); color: #95e7ff; }
+
+    .card h3 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.35;
+      padding-right: 8px;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      white-space: pre-line;
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .copy-btn.primary {
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      border: none;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .helper {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(25,195,125,0.1);
+      border: 1px solid rgba(25,195,125,0.22);
+      color: #a1efc8;
+      font-size: 13px;
+      display: none;
+    }
+
+    .empty {
+      border: 1px dashed var(--line);
+      border-radius: 18px;
+      padding: 22px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .floating-copy {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 14px 18px;
+      font-weight: bold;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      display: none;
+      z-index: 50;
+    }
+
+    @media (max-width: 1180px) {
+      .topbar,
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .app {
+        padding: 16px;
+      }
+
+      .hero-grid,
+      .stats {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="shell">
+      <section class="topbar">
+        <div class="hero">
+          <div class="brand-row">
+            <div class="brand">
+              <div class="badge">GP</div>
+              <div>
+                <h1>Scripts Prontos Suporte N1</h1>
+                <p>Atendimento otimizado para <strong>Guilherme</strong> • clique e copie instantaneamente</p>
+              </div>
+            </div>
+            <div class="status-pill">● Copiar com 1 clique • uso rápido</div>
+          </div>
+
+          <p style="color: var(--muted); line-height: 1.55; margin: 0;">
+            Sistema focado só no que importa: frases prontas, organização melhor e menos tempo digitando no atendimento.
+            Clique em qualquer tópico para copiar o texto completo. Use pesquisa, filtros e favoritos para achar tudo mais rápido.
+          </p>
+
+          <div class="hero-grid">
+            <div class="mini-card">
+              <h3>Como usar</h3>
+              <p>Clique no card ou no botão copiar. O texto vai direto para a área de transferência, pronto para colar no atendimento.</p>
+            </div>
+            <div class="mini-card">
+              <h3>Otimização</h3>
+              <p>Favoritos, busca por palavra, categorias e botão para copiar o último script usado ajudam a acelerar sua rotina.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="quick-panel">
+          <h2>Ações rápidas</h2>
+          <div class="quick-actions">
+            <button class="quick-btn" onclick="copyById(1)">Saudação inicial</button>
+            <button class="quick-btn" onclick="copyById(4)">Teste de velocidade</button>
+            <button class="quick-btn" onclick="copyById(8)">Instabilidade geral</button>
+            <button class="quick-btn" onclick="copyById(10)">Luz vermelha</button>
+            <button class="quick-btn" onclick="copyById(14)">IPTV</button>
+            <button class="quick-btn" onclick="copyById(16)">Encerramento</button>
+          </div>
+          <div id="helperMessage" class="helper"></div>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <aside class="sidebar">
+          <div class="sidebar-section">
+            <h3>Buscar frase</h3>
+            <p>Pesquise por palavras como lentidão, fibra, agendamento, Google, senha ou expediente.</p>
+            <input id="searchInput" class="search" type="text" placeholder="Digite uma palavra-chave" />
+          </div>
+
+          <div class="sidebar-section">
+            <h3>Filtrar por categoria</h3>
+            <div class="filter-group" id="filters">
+              <button class="filter-btn active" data-filter="todos">Todos</button>
+              <button class="filter-btn" data-filter="abertura">Abertura</button>
+              <button class="filter-btn" data-filter="lentidao">Lentidão</button>
+              <button class="filter-btn" data-filter="fibra">Fibra</button>
+              <button class="filter-btn" data-filter="geral">Geral</button>
+              <button class="filter-btn" data-filter="encerramento">Encerramento</button>
+              <button class="filter-btn" data-filter="favoritos">Favoritos</button>
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <h3>Painel rápido do Guilherme</h3>
+            <div class="stats">
+              <div class="stat">
+                <span>Scripts</span>
+                <strong id="totalScripts">0</strong>
+              </div>
+              <div class="stat">
+                <span>Favoritos</span>
+                <strong id="totalFavs">0</strong>
+              </div>
+              <div class="stat">
+                <span>Último</span>
+                <strong id="lastUsed">—</strong>
+              </div>
+              <div class="stat">
+                <span>Cópias</span>
+                <strong id="copyCount">0</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <h3>Atalhos para agilizar</h3>
+            <p>Use os botões abaixo para reduzir cliques durante o atendimento.</p>
+            <div class="quick-actions">
+              <button class="action-btn" onclick="showOnlyFavorites()">Ver favoritos</button>
+              <button class="action-btn" onclick="clearSearch()">Limpar busca</button>
+              <button class="action-btn" onclick="copyLastUsed()">Copiar último</button>
+            </div>
+          </div>
+        </aside>
+
+        <main class="library">
+          <div class="library-header">
+            <div>
+              <h2>Biblioteca de frases prontas</h2>
+              <div class="library-sub">Clique no tópico desejado e copie instantaneamente o texto completo.</div>
+            </div>
+          </div>
+
+          <div id="cards" class="cards"></div>
+        </main>
+      </section>
+    </div>
+  </div>
+
+  <button id="floatingCopy" class="floating-copy" onclick="copyLastUsed()">Copiar último usado</button>
+
+  <script>
+    const scripts = [
+      {
+        id: 1,
+        title: 'Saudação inicial com identificação',
+        category: 'abertura',
+        text: `Boa noite! Tudo bem? 😊\nAntes de começarmos, poderia me informar o CPF ou CNPJ do titular, por favor? Assim, conseguimos dar continuidade ao seu atendimento.\nApós enviar o CPF/CNPJ, me diga como posso te ajudar? 😊`
+      },
+      {
+        id: 2,
+        title: 'Solicitação de avaliação Google com nome Guilherme',
+        category: 'abertura',
+        text: `Se for possível, gostaria de pedir sua gentileza para deixar uma avaliação com ⭐⭐⭐⭐⭐ no Google mencionando meu nome (Guilherme). Isso contribui muito para o meu trabalho! 👉 Basta clicar neste link: https://g.co/kgs/MmGpTYD 💬 Sugestão de comentário: \"Fui muito bem atendido(a) pelo Guilherme.\" 📸 Se puder, me envie um print da avaliação após concluir. Isso me ajuda a registrar e acompanhar os atendimentos. Desde já, agradeço imensamente pelo seu tempo e apoio! 🙏`
+      },
+      {
+        id: 3,
+        title: 'Dados para agendamento técnico',
+        category: 'fibra',
+        text: `Antes de confirmar o agendamento preciso das seguintes informações 😊\nEndereço:\nCEP:\nBairro:\nLocalização:\nTelefone para contato:\nVerifiquei que se trata de um problema na fibra, me confirma os dados acima por gentileza para realizarmos o agendamento.\nO agendamento foi realizado para amanhã, eu não consigo confirmar um horário fixo, pois nossos técnicos atuam por rota própria, mas assim que ele se direcionar à residência ele entrará em contato. Ajudaria em algo mais?`
+      },
+      {
+        id: 4,
+        title: 'Informação sobre agendamento',
+        category: 'visita',
+        text: `O agendamento foi realizado para amanhã, eu não consigo confirmar um horário fixo, pois nossos técnicos atuam por rota própria, mas assim que ele se direcionar à residência ele entrará em contato. Ajudaria em algo mais?`
+      },
+      {
+        id: 5,
+        title: 'Orientação de teste de velocidade correto',
+        category: 'lentidao',
+        text: `Para verificar corretamente a velocidade máxima da sua conexão, é necessário realizar o teste de velocidade em um computador conectado diretamente via cabo de rede CAT6 (categoria 6), padrão 1000 Mbps (1 Gbps).\n\nRessaltamos que testes realizados via celular ou Wi‑Fi podem apresentar variações devido a interferências e limitações do próprio dispositivo, e por isso não refletem com precisão a velocidade contratada.`
+      },
+      {
+        id: 6,
+        title: 'Pedido de avaliação Google simplificado',
+        category: 'encerramento',
+        text: `Muito obrigado pelo seu contato! 😊\nSua avaliação com NOTA 5 faz toda a diferença e me ajuda a continuar oferecendo um atendimento cada vez melhor.\nConto com seu apoio e te desejo uma noite incrível!\nSe for possível, gostaria de pedir sua gentileza com ⭐⭐⭐⭐⭐ estrelas no GOOGLE e mencionar meu nome, GUILHERME, com um comentário positivo 😊\nhttps://shre.ink/tI9Y`
+      },
+      {
+        id: 7,
+        title: 'Encerramento com nota 5',
+        category: 'encerramento',
+        text: `Disponha! Peço que avalie meu atendimento com nota 5 (EXCELENTE), é muito importante para mim.\nTenha uma excelente noite! 😃`
+      },
+      {
+        id: 8,
+        title: 'Registro rápido de lentidão estabilizada',
+        category: 'lentidao',
+        text: `CLIENTE INFORMOU LENTIDÃO, FOI REALIZADA AS CONFIGURAÇÕES E ESTABILIZOU`
+      },
+      {
+        id: 9,
+        title: 'Explicação sobre TV Box não homologada',
+        category: 'geral',
+        text: `📺💡 Explicação simples para o cliente:\n\"A sua internet está funcionando perfeitamente, e o plano contratado está sendo entregue 100%. O que está causando os travamentos é o próprio aparelho (TV Box), que infelizmente não é homologado pela Anatel.\nIsso significa que ele não passou pelos testes de qualidade e compatibilidade exigidos aqui no Brasil. Esses aparelhos costumam ter problemas de desempenho, travamentos, superaquecimento e instabilidade, mesmo com internet boa.\"\n\n🔧 Como explicar o que é um equipamento não homologado:\n\"Equipamentos homologados pela Anatel são testados para garantir que funcionam bem com as redes do Brasil. Quando um aparelho não tem essa homologação, ele pode funcionar mal, travar ou até causar interferência.\nA TV pode parecer que está com problema de internet, mas na verdade é o próprio aparelho que não consegue aproveitar toda a qualidade da conexão.\"\n\n✅ Solução sugerida:\n\"Minha sugestão é que, se possível, o senhor(a) teste o serviço em uma Smart TV ou em outro dispositivo confiável, como um notebook ou celular. Assim dá pra perceber que a internet está funcionando bem.\nSe quiser continuar com a TV Box, vale considerar trocar por uma versão homologada ou até usar uma Smart TV diretamente, que tende a ser mais estável.\"`
+      },
+      {
+        id: 10,
+        title: 'Normalização sem retorno do cliente',
+        category: 'encerramento',
+        text: `Como não tivemos mais interações, vou registrar no contato que sua conexão normalizou. Caso o problema de falta de conexão persista, pode ficar à vontade para entrar em contato novamente.`
+      },
+      {
+        id: 11,
+        title: 'Solicitação de foto em caso de luz vermelha',
+        category: 'fibra',
+        text: `Verifica se tem alguma luz vermelha no equipamento ligada, senhor(a). Caso tenha, me envia uma foto por gentileza.`
+      },
+      {
+        id: 12,
+        title: 'Instabilidade geral sem previsão',
+        category: 'fibra',
+        text: `Verifiquei aqui e ocorreu um rompimento de fibra óptica na sua região, afetando potencialmente o serviço de internet da sua região. Ainda não temos um prazo para a normalização dos serviços.\nEste incidente está sendo tratado com máxima urgência pela equipe técnica responsável. Pedimos desculpas por qualquer inconveniente e agradecemos pela sua compreensão enquanto trabalhamos para restaurar completamente os serviços. 💙`
+      },
+      {
+        id: 13,
+        title: 'Alta demanda no chat',
+        category: 'geral',
+        text: `Peço desculpas pela demora no atendimento. Estamos com uma alta demanda de atendimentos pelo chat hoje, peço que aguarde um momento que irei dar continuidade no seu atendimento.\nVou realizar agendamento, peço que aguarde por favor.\n\nPeço desculpas pela demora no atendimento. Devido ao alto fluxo de clientes hoje, o tempo de espera está um pouco mais longo do que o habitual. Peço que aguarde um momento por favor.`
+      },
+      {
+        id: 14,
+        title: 'Teste de conexão com fast.com',
+        category: 'lentidao',
+        text: `Vou pedir pra você, de preferência, realizar o teste no computador, conectando-o à rede via cabo e garantindo que a placa de rede tenha suporte para a velocidade máxima. Caso não tenha um computador disponível, você pode realizar o teste no celular. Para isso, conecte seu celular à rede Wi‑Fi 5G, acesse o site abaixo e realize o teste de conexão. Após, tire um print e me envie aqui.\n\nfast.com/pt/`
+      },
+      {
+        id: 15,
+        title: 'Lentidão com configuração remota',
+        category: 'lentidao',
+        text: `Essa lentidão está ocorrendo em algum aplicativo/site específico ou aparelho eletrônico específico?\n\nEntendi! Só um instante, por favor. Vou realizar algumas configurações remotas no seu roteador para melhorar o sinal e reduzir possíveis interferências. Durante esse processo, a conexão pode oscilar ou cair por um momento. Aviso assim que finalizar! 😊\n\nPeço que desligue o equipamento da tomada e aguarde 10 min. Após isso, religue o equipamento e verifique se a conexão voltou por favor.`
+      },
+      {
+        id: 16,
+        title: 'Troca de senha do Wi‑Fi',
+        category: 'geral',
+        text: `Vou realizar a troca da senha do seu Wi‑Fi para garantir uma conexão mais segura e estável. Durante esse processo, sua conexão pode cair por alguns instantes.`
+      },
+      {
+        id: 17,
+        title: 'Fibra rompida com vídeo e foto do roteador',
+        category: 'fibra',
+        text: `Tem luz vermelha piscando? Pode me mandar um vídeo por favor.\n\nLamento pela situação, senhor(a). Sei como é frustrante ficar sem internet. Enquanto eu acesso o seu cadastro e verifico a conexão da sua rede, me envia um vídeo do seu roteador, por favor, para eu verificar o status das luzes nele e também, se possível, uma foto da parte de baixo dele, pois precisarei de alguns números que constam nele.\n- Um vídeo do roteador\n- Uma foto da parte de baixo do roteador\n- Enviar localização fixa em caso de necessidade de agendamento\n\nEntendi, nesse caso de luz vermelha é sinal de fibra rompida. Vou confirmar se não é rompimento massivo na sua região. Se for, assim que nossos técnicos realizarem a manutenção referente a esse rompimento, a sua conexão vai ser restabelecida. Caso contrário, preciso agendar uma visita com um técnico para identificar onde foi o rompimento.`
+      },
+      {
+        id: 18,
+        title: 'Agendamento por turno em caso de rompimento',
+        category: 'fibra',
+        text: `Agradeço pelas informações enviadas! Vou verificar se o problema está relacionado a um rompimento em larga escala na sua região. Caso contrário, precisarei agendar a visita de um técnico para solucionar a situação no seu equipamento.\n\nEnquanto isso, por gentileza, me informe um turno, manhã ou tarde, em que posso agendar a visita do técnico para que a senhora possa receber a equipe e também me envie a localização fixa do Google onde está o roteador. Lembrando que não consigo informar um horário fixo, pois nossos técnicos atuam por rota. Assim que eles estiverem a caminho, o técnico entrará em contato para avisar. Tudo bem?`
+      },
+      {
+        id: 19,
+        title: 'Orientação sobre IPTV sem suporte',
+        category: 'geral',
+        text: `Quando o senhor acessa um conteúdo na internet, ele segue determinada rota, um caminho direto, do ponto A até o ponto B. Porém, quando é utilizado um serviço IPTV, por ser um serviço não homologado, o caminho acaba sendo maior, passando por outros pontos, como A, B, C e D. Às vezes, a Anatel pode ter bloqueado algum desses pontos, por isso é necessário que o senhor verifique essa questão com o seu fornecedor dos canais para que ele possa verificar a rota a qual está sendo disponibilizada para o senhor.`
+      },
+      {
+        id: 20,
+        title: 'Fim de expediente',
+        category: 'encerramento',
+        text: `Devido ao meu expediente, vou estar finalizando por aqui, mas fique à vontade para retornar o contato. Agradeço pelo seu contato! Se possível, poderia avaliar meu atendimento com a nota 5? Isso é muito importante para mim.\nTenha uma ótima noite! 😊`
+      },
+      {
+        id: 21,
+        title: 'Frases para acalmar o cliente',
+        category: 'geral',
+        text: `1. Entendo a sua frustração e vou te ajudar a resolver isso da melhor forma possível.\n2. Vou fazer algumas configurações remotas no seu roteador para melhorar a sua conexão. Durante esse processo, a sua conexão pode cair por alguns instantes, mas isso é normal.\n3. Vou te passar algumas dicas para otimizar a sua internet, assim você pode aproveitar ao máximo a velocidade do seu plano.\n4. Estou ajustando a sua conexão para garantir mais estabilidade e um melhor desempenho.\n5. Já fizemos alguns ajustes, agora aguarde alguns minutos e verifique se percebe alguma melhora.`
+      },
+      {
+        id: 22,
+        title: 'Encerramento por palavras inadequadas',
+        category: 'encerramento',
+        text: `Informamos que, devido ao uso contínuo de palavras inadequadas e de baixo calão durante o atendimento, podemos não dar seguimento à interação. Nosso compromisso é oferecer um atendimento respeitoso e cordial.`
+      }
+    ];
+
+    let activeFilter = 'todos';
+    let favorites = JSON.parse(localStorage.getItem('nocFavorites') || '[]');
+    let copyCount = Number(localStorage.getItem('nocCopyCount') || 0);
+    let lastUsed = Number(localStorage.getItem('nocLastUsed') || 0);
+
+    const cardsEl = document.getElementById('cards');
+    const searchInput = document.getElementById('searchInput');
+    const helperMessage = document.getElementById('helperMessage');
+    const floatingCopy = document.getElementById('floatingCopy');
+
+    function renderCards() {
+      const term = searchInput.value.toLowerCase().trim();
+
+      let filtered = scripts.filter(item => {
+        const matchSearch = !term || item.title.toLowerCase().includes(term) || item.text.toLowerCase().includes(term);
+        const matchFilter = activeFilter === 'todos'
+          ? true
+          : activeFilter === 'favoritos'
+            ? favorites.includes(item.id)
+            : item.category === activeFilter;
+        return matchSearch && matchFilter;
+      });
+
+      updateStats(filtered.length);
+
+      if (!filtered.length) {
+        cardsEl.innerHTML = `<div class="empty">Nenhuma frase encontrada com esse filtro. Tente outra palavra-chave ou volte para "Todos".</div>`;
+        return;
+      }
+
+      cardsEl.innerHTML = filtered.map(item => {
+        const fav = favorites.includes(item.id);
+        return `
+          <article class="card" onclick="copyById(${item.id})" title="Clique para copiar">
+            <div class="card-top">
+              <div>
+                <span class="category ${item.category}">${capitalize(item.category)}</span>
+              </div>
+              <button class="favorite-btn" onclick="event.stopPropagation(); toggleFavorite(${item.id})">${fav ? '★ Favorito' : '☆ Favoritar'}</button>
+            </div>
+            <h3>${item.title}</h3>
+            <p>${item.text}</p>
+            <div class="card-actions">
+              <button class="copy-btn primary" onclick="event.stopPropagation(); copyById(${item.id})">Copiar agora</button>
+              <button class="copy-btn" onclick="event.stopPropagation(); previewToast('${escapeSingle(item.title)}')">Clique no card inteiro para copiar</button>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function copyById(id) {
+      const script = scripts.find(item => item.id === id);
+      if (!script) return;
+
+      navigator.clipboard.writeText(script.text).then(() => {
+        copyCount += 1;
+        lastUsed = id;
+        localStorage.setItem('nocCopyCount', copyCount);
+        localStorage.setItem('nocLastUsed', lastUsed);
+        floatingCopy.style.display = 'block';
+        showHelper(`Copiado com sucesso: ${script.title}`);
+        updateStats();
+      }).catch(() => {
+        showHelper('Não foi possível copiar automaticamente.');
+      });
+    }
+
+    function copyLastUsed() {
+      if (!lastUsed) {
+        showHelper('Você ainda não copiou nenhum script.');
+        return;
+      }
+      copyById(lastUsed);
+    }
+
+    function toggleFavorite(id) {
+      if (favorites.includes(id)) {
+        favorites = favorites.filter(item => item !== id);
+      } else {
+        favorites.push(id);
+      }
+      localStorage.setItem('nocFavorites', JSON.stringify(favorites));
+      renderCards();
+    }
+
+    function showOnlyFavorites() {
+      activeFilter = 'favoritos';
+      setActiveButton();
+      renderCards();
+    }
+
+    function clearSearch() {
+      searchInput.value = '';
+      activeFilter = 'todos';
+      setActiveButton();
+      renderCards();
+    }
+
+    function setActiveButton() {
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === activeFilter);
+      });
+    }
+
+    function updateStats(visibleCount) {
+      document.getElementById('totalScripts').textContent = scripts.length;
+      document.getElementById('totalFavs').textContent = favorites.length;
+      document.getElementById('copyCount').textContent = copyCount;
+      const lastItem = scripts.find(item => item.id === lastUsed);
+      document.getElementById('lastUsed').textContent = lastItem ? String(lastItem.id) : '—';
+    }
+
+    function showHelper(text) {
+      helperMessage.textContent = text;
+      helperMessage.style.display = 'block';
+      clearTimeout(showHelper.timer);
+      showHelper.timer = setTimeout(() => {
+        helperMessage.style.display = 'none';
+      }, 2200);
+    }
+
+    function previewToast(title) {
+      showHelper(`Dica: clique em qualquer parte do tópico "${title}" para copiar.`);
+    }
+
+    function capitalize(text) {
+      return text.charAt(0).toUpperCase() + text.slice(1);
+    }
+
+    function escapeSingle(text) {
+      return text.replace(/'/g, "\\'");
+    }
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeFilter = btn.dataset.filter;
+        setActiveButton();
+        renderCards();
+      });
+    });
+
+    searchInput.addEventListener('input', renderCards);
+
+    renderCards();
+    updateStats();
+    if (lastUsed) floatingCopy.style.display = 'block';
+  </script>
+</body>
+</html>
